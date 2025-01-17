@@ -6,34 +6,40 @@ import Details from './pages/Deteils';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
-function App() {
+function PrivateRoute({ children }) {
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token'); // Tokenni localStorage'dan o'qiymiz
 
-  const naviget = useNavigate()
-
-  function PrivateRoute(isAuth,children){
-
-    if(!isAuth){
-      naviget('/login')
-    }
-
-    return children
+  if (!token) {
+    navigate('/login');
+    return null;
   }
 
+  return children;
+}
+
+function App() {
   return (
     <div>
       <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-
-        <Route path='/' element={<PrivateRoute>
-          <Home />
-        </PrivateRoute>} />
-        <Route path='/about' element={<PrivateRoute>
-          <About />
-        </PrivateRoute>} />
-        <Route path='/details' element={<PrivateRoute>
-          <Details />
-        </PrivateRoute>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        
+        <Route path="/" element={
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        } />
+        <Route path="/about" element={
+          <PrivateRoute>
+            <About />
+          </PrivateRoute>
+        } />
+        <Route path="/details" element={
+          <PrivateRoute>
+            <Details />
+          </PrivateRoute>
+        } />
       </Routes>
     </div>
   );
